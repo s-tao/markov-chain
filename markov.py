@@ -25,55 +25,74 @@ def open_and_read_file(file_path):
     return text
 
 
-def make_chains(text_string):
-    """Take input text as string; return dictionary of Markov chains.
-
-    A chain will be a key that consists of a tuple of (word1, word2)
-    and the value would be a list of the word(s) that follow those two
-    words in the input text.
-
-    For example:
-
-        >>> chains = make_chains("hi there mary hi there juanita")
-
-    Each bigram (except the last) will be a key in chains:
-
-        >>> sorted(chains.keys())
-        [('hi', 'there'), ('mary', 'hi'), ('there', 'mary')]
-
-    Each item in chains is a list of all possible following words:
-
-        >>> chains[('hi', 'there')]
-        ['mary', 'juanita']
-        
-        >>> chains[('there','juanita')]
-        [None]
+def make_chains_of_length_n(text_string, n):
+    """ Take input text as string; return dictionary with keys of length n of 
+    Markov chains.
     """
 
     chains = {}
 
-    # your code goes here
-
     text_list = text_string.split()
 
-    for idx in range(len(text_list) - 2):
-        key = (text_list[idx], text_list[idx + 1])
+    for idx in range(len(text_list) - n):
+        key = tuple(text_list[idx: idx + n])
 
-        following_word = text_list[idx + 2]
+        following_word = text_list[idx + n]
 
-        # current_value = chains.get(key, []) + [following_word]
-
-        # current_value = chains.get(key, [])
-        # current_value.append("hi") -- edits first list in place
-
-        # chains[key] = current_value
-
-        chains[key] = chains.get(key, []) + [following_word] #makes a new list every time
+        chains[key] = chains.get(key, []) + [following_word]
 
     return chains
 
+# function for bi-gram below:
+# def make_chains(text_string):
+#     """Take input text as string; return dictionary of Markov chains.
 
-def make_text(chains):
+#     A chain will be a key that consists of a tuple of (word1, word2)
+#     and the value would be a list of the word(s) that follow those two
+#     words in the input text.
+
+#     For example:
+
+#         >>> chains = make_chains("hi there mary hi there juanita")
+
+#     Each bigram (except the last) will be a key in chains:
+
+#         >>> sorted(chains.keys())
+#         [('hi', 'there'), ('mary', 'hi'), ('there', 'mary')]
+
+#     Each item in chains is a list of all possible following words:
+
+#         >>> chains[('hi', 'there')]
+#         ['mary', 'juanita']
+        
+#         >>> chains[('there','juanita')]
+#         [None]
+#     """
+
+#     chains = {}
+
+#     # your code goes here
+
+#     text_list = text_string.split()
+
+#     for idx in range(len(text_list) - 2):
+#         key = (text_list[idx], text_list[idx + 1])
+
+#         following_word = text_list[idx + 2]
+
+#         # current_value = chains.get(key, []) + [following_word]
+
+#         # current_value = chains.get(key, [])
+#         # current_value.append("hi") -- edits first list in place
+
+#         # chains[key] = current_value
+
+#         chains[key] = chains.get(key, []) + [following_word] #makes a new list every time
+
+#     return chains
+
+
+def make_text(chains, n):
     """Return text from chains."""
 
     words = []
@@ -92,7 +111,7 @@ def make_text(chains):
     while True:
 
         try:
-            current_key = chains[(words[-2], words[-1])]
+            current_key = chains[tuple(words[-n:])]
             random_word = choice(current_key)
             words.append(random_word)
 
@@ -101,7 +120,9 @@ def make_text(chains):
 
     return " ".join(words)
 
+
 filename = sys.argv[1] #runs argv file in terminal
+n = int(sys.argv[2])
 
 input_path = filename
 
@@ -109,9 +130,9 @@ input_path = filename
 input_text = open_and_read_file(input_path)
 
 # Get a Markov chain
-chains = make_chains(input_text)
+chains = make_chains_of_length_n(input_text, n)
 
 # Produce random text
-random_text = make_text(chains)
+random_text = make_text(chains, n)
 
 print(random_text)
