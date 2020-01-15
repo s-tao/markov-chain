@@ -4,7 +4,7 @@ from random import choice
 import sys
 
 
-def open_and_read_file(file_path):
+def open_and_read_file(*file_paths):
     """Take file path as string; return text as string.
 
     Takes a string that is a file path, opens the file, and turns
@@ -13,14 +13,21 @@ def open_and_read_file(file_path):
 
     # your code goes here
 
-    text_file = open(file_path)
+    # text_file = open(file_path)
 
-    # for text in text_file:
-    #     strip_text = text.rstrip()
+    # text = text_file.read()
 
-    text = text_file.read()
+    # text_file.close()
 
-    text_file.close()
+    text = ""
+
+    for path in file_paths:
+
+        other_text_file = open(path)
+
+        text += other_text_file.read()
+
+        other_text_file.close()
 
     return text
 
@@ -121,13 +128,15 @@ def make_text(chains, n):
     return " ".join(words)
 
 
-filename = sys.argv[1] #runs argv file in terminal
-n = int(sys.argv[2])
+# filename = sys.argv[2] #runs argv file in terminal
+n = int(sys.argv[1])
 
-input_path = filename
+input_paths = sys.argv[2:]
 
 # Open the file and turn it into one long string
-input_text = open_and_read_file(input_path)
+
+input_text = open_and_read_file(*input_paths)
+
 
 # Get a Markov chain
 chains = make_chains_of_length_n(input_text, n)
