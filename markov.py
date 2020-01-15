@@ -1,6 +1,7 @@
 """Generate Markov text from text files."""
 
 from random import choice
+import sys
 
 
 def open_and_read_file(file_path):
@@ -76,10 +77,12 @@ def make_text(chains):
     """Return text from chains."""
 
     words = []
-
+    chain_keys = []
     # your code goes here
+    for key in chains.keys():
+        if key[0][0] == key[0][0].upper():
+            chain_keys.append(key)
 
-    chain_keys = chains.keys()
     first = choice(list(chain_keys))
     words += list(first)
 
@@ -98,8 +101,9 @@ def make_text(chains):
 
     return " ".join(words)
 
+filename = sys.argv[1] #runs argv file in terminal
 
-input_path = "markov_text.txt"
+input_path = filename
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
