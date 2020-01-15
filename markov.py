@@ -16,7 +16,7 @@ def open_and_read_file(file_path):
 
     # for text in text_file:
     #     strip_text = text.rstrip()
-    
+
     text = text_file.read()
 
     text_file.close()
@@ -55,14 +55,19 @@ def make_chains(text_string):
 
     text_list = text_string.split()
 
-    for idx in range(len(text_list)-2):
-        key = (text_list[idx], text_list[idx+1])
+    for idx in range(len(text_list) - 2):
+        key = (text_list[idx], text_list[idx + 1])
 
-        following_word = text_list[idx+2]
+        following_word = text_list[idx + 2]
 
-        current_value = chains.get(key, []) + [following_word]
-        # new_value = current_value.append(following_word)
-        chains[key] = current_value #.extend([following_word])
+        # current_value = chains.get(key, []) + [following_word]
+
+        # current_value = chains.get(key, [])
+        # current_value.append("hi") -- edits first list in place
+
+        # chains[key] = current_value
+
+        chains[key] = chains.get(key, []) + [following_word] #makes a new list every time
 
     return chains
 
@@ -75,24 +80,26 @@ def make_text(chains):
     # your code goes here
 
     chain_keys = chains.keys()
-    # print(chain_keys)
     first = choice(list(chain_keys))
-    print(first)
-    # words.extend(list(first))
+    words += list(first)
 
+    # random_value = choice(chains[first])
+    # words.append(random_value)
 
-    # i = 0
+    while True:
 
-    # while i < 5:
+        try:
+            current_key = chains[(words[-2], words[-1])]
+            random_word = choice(current_key)
+            words.append(random_word)
 
-    #     # choice(chain_keys)
-
-    #     i += 1
+        except KeyError:
+            break
 
     return " ".join(words)
 
 
-input_path = "green-eggs.txt"
+input_path = "markov_text.txt"
 
 # Open the file and turn it into one long string
 input_text = open_and_read_file(input_path)
